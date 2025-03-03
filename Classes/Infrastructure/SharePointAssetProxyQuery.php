@@ -8,6 +8,8 @@ use Neos\Media\Domain\Model\AssetSource\AssetProxyQueryInterface;
 use Neos\Media\Domain\Model\AssetSource\AssetProxyQueryResultInterface;
 use Neos\Flow\Annotations as Flow;
 use Office365\SharePoint\ClientContext;
+use Office365\SharePoint\FileCollection;
+use Office365\SharePoint\Folder;
 use Sitegeist\SharePointAssetSource\SharePointAssetSource;
 
 #[Flow\Proxy(false)]
@@ -56,11 +58,33 @@ final class SharePointAssetProxyQuery implements AssetProxyQueryInterface
     {
         $rootFolder = $this->client->getWeb()
             ->getFolderByServerRelativeUrl($this->assetSource->rootFolderPath);
-        $files = $rootFolder->getFiles();
+
+        return new SharePointAssetProxyQueryResult($this->loadFolderRecursively($rootFolder), $this->assetSource, $this);
+    }
+
+    /**
+     * @return array<FileCollection> one file collection per folder
+     */
+    private function loadFolderRecursively(Folder $folder, int $numberOfItemsSoFar = 0): array
+    {
+        $files = $folder->getFiles();
         $this->client->load($files);
         $this->client->executeQuery();
 
-        return new SharePointAssetProxyQueryResult($files, $this->assetSource, $this);
+        $numberOfItemsSoFar += $files->getCount();
+
+        $result = [$files];
+
+        if ($numberOfItemsSoFar < $this->limit) {
+            $childFolders = $folder->getFolders();
+            $this->client->load($childFolders);
+            $this->client->executeQuery();
+            foreach ($childFolders as $childFolder) {
+                $result = array_merge($result, $this->loadFolderRecursively($childFolder, $numberOfItemsSoFar));
+            }
+        }
+
+        return $result;
     }
 
     public function count(): int

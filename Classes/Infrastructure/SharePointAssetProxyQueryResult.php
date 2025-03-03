@@ -20,12 +20,20 @@ final class SharePointAssetProxyQueryResult implements AssetProxyQueryResultInte
      */
     private array $files;
 
+    /**
+     * @param array<FileCollection> $filesPerFolder
+     */
     public function __construct(
-        FileCollection $files,
+        array $filesPerFolder,
         private readonly SharePointAssetSource $assetSource,
         private readonly SharePointAssetProxyQuery $query,
     ) {
-        $this->files = iterator_to_array($files);
+        $files = [];
+        foreach ($filesPerFolder as $fileCollection) {
+            $files = array_merge($files, iterator_to_array($fileCollection));
+        }
+
+        $this->files = $files;
     }
 
     public function getQuery(): AssetProxyQueryInterface

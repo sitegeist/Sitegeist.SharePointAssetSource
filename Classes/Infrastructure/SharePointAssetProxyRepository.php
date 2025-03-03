@@ -32,7 +32,6 @@ final class SharePointAssetProxyRepository implements AssetProxyRepositoryInterf
 
     public function filterByType(?AssetTypeFilter $assetType = null): void
     {
-        // TODO: Implement filterByType() method.
     }
 
     public function findAll(): AssetProxyQueryResultInterface
@@ -49,21 +48,21 @@ final class SharePointAssetProxyRepository implements AssetProxyRepositoryInterf
 
     public function findBySearchTerm(string $searchTerm): AssetProxyQueryResultInterface
     {
-        // TODO: Implement findBySearchTerm() method.
+        return $this->findAll();
     }
 
     public function findByTag(Tag $tag): AssetProxyQueryResultInterface
     {
-        // TODO: Implement findByTag() method.
+        return $this->findAll();
     }
 
     public function findUntagged(): AssetProxyQueryResultInterface
     {
-        // TODO: Implement findUntagged() method.
+        return $this->findAll();
     }
 
     public function countAll(): int
     {
-        return 0;
+        return $this->findAll()->count();
     }
 }

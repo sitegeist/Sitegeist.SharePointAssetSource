@@ -23,7 +23,7 @@ final class SharePointAssetProxyRepository implements AssetProxyRepositoryInterf
     public function getAssetProxy(string $identifier): AssetProxyInterface
     {
         $client = clone $this->client;
-        $file = $client->getWeb()->getFileById($identifier);
+        $file = $client->getWeb()->getFileById($identifier)->expand('ListItemAllFields');
         $client->load($file);
         $client->executeQuery();
 

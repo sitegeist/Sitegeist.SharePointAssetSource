@@ -15,7 +15,7 @@ use Sitegeist\SharePointAssetSource\SharePointAssetSource;
 final class SharePointAssetProxy implements AssetProxyInterface
 {
     public function __construct(
-        private readonly File $file,
+        public readonly File $file,
         private readonly SharePointAssetSource $assetSource,
     ) {
     }

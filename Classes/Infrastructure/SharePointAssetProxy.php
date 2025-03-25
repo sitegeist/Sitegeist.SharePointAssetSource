@@ -47,7 +47,7 @@ final class SharePointAssetProxy implements AssetProxyInterface
 
     public function getFileSize(): int
     {
-        return 0;
+        return (int)$this->file->getLength();
     }
 
     public function getMediaType(): string

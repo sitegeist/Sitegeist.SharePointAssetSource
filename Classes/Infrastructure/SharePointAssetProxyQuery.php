@@ -67,7 +67,7 @@ final class SharePointAssetProxyQuery implements AssetProxyQueryInterface
      */
     private function loadFolderRecursively(Folder $folder, int $numberOfItemsSoFar = 0): array
     {
-        $files = $folder->getFiles();
+        $files = $folder->getFiles()->expand('ListItemAllFields');
         $this->client->load($files);
         $this->client->executeQuery();
 
